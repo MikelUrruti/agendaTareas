@@ -21,6 +21,42 @@ contract Agenda {
 
     }
 
+    modifier tareaUnica(string memory nombre) {
+
+        if (tareas[msg.sender].length > 0) {
+
+            for (uint256 index = 0; index < tareas[msg.sender].length; index++) {
+
+                if (keccak256(abi.encodePacked(tareas[msg.sender][index].nombre)) == keccak256(abi.encodePacked(nombre))) {
+
+                    revert("El nombre de la tarea esta repetido");
+
+                }
+
+            }
+
+        }
+
+        _;
+        
+
+    }
+
+    modifier camposRellenos(string memory nombre, string memory descripcion) {
+
+        if ((bytes(nombre).length) == 0 && (bytes(descripcion).length == 0)) {
+
+            revert("Indica todos los datos de la tarea");
+
+        }
+
+        require(bytes(nombre).length > 0,"Indica el nombre de la tarea");
+        require(bytes(descripcion).length > 0,"Indica la descripcion de la tarea");
+
+        _;
+
+    }
+
     function obtenerTareas() view public returns (Tarea[] memory) {
         
         return tareas[msg.sender];
@@ -49,10 +85,7 @@ contract Agenda {
 
     }
 
-    function anadirTarea(string memory nombre, string memory descripcion) public{
-
-        require(bytes(nombre).length > 0);
-        require(bytes(descripcion).length > 0);
+    function anadirTarea(string memory nombre, string memory descripcion) public camposRellenos(nombre, descripcion) tareaUnica(nombre){
 
         tareas[msg.sender].push(Tarea(nombre,descripcion));
 

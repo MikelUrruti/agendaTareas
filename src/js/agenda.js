@@ -1,23 +1,20 @@
 import { ethers } from "./librerias/ethers-5.6.esm.min.js";
-import { abi } from "./contratos/Agenda.js";
+
+export {iniciarConexion, metamaskInstalado, comprobarRedCorrecta, mostrarAdvertencia, mostrarError, mostrarExito, desConectarBlockchain, borrarMensaje, solicitarCuenta, mostrarMensaje}
 
 var botonDesConectar = null;
 var botonConectar = null;
-var proveedor = null;
-var contratoAgenda = null;
-var tareas = []
+export var proveedor = null;
 
-window.onload = function () { 
+function iniciarConexion(callback, callbackDesconexion) { 
 
-    console.log(document.getElementById("desConectarBlockchain"))
-
-    conectarBlockchain()
+    metamaskInstalado(callback)
 
     botonDesConectar=document.getElementById("desConectarBlockchain")
     botonConectar=document.getElementById("conectarBlockchain")
 
-    document.getElementById("conectarBlockchain").addEventListener("click",conectarBlockchain);
-    document.getElementById("desConectarBlockchain").addEventListener("click",desConectarBlockchain);
+    document.getElementById("conectarBlockchain").addEventListener("click",function(){metamaskInstalado(callback)});
+    document.getElementById("desConectarBlockchain").addEventListener("click",function(){desConectarBlockchain(callbackDesconexion)});
 
     ethereum.on("chainChanged", (_chainId) => {
 
@@ -29,22 +26,15 @@ window.onload = function () {
 
 }
 
-function conectarBlockchain() {
+function metamaskInstalado(callback) {
 
     if (typeof window.ethereum !== 'undefined') {
 
-        console.log(proveedor)
-
         if (ethereum.isConnected()) {
 
-            solicitarCuenta()
-
-        } else {
-
-            solicitarCuenta()
+            solicitarCuenta(callback)
 
         }
-
     
     } else {
     
@@ -104,23 +94,30 @@ async function comprobarRedCorrecta() {
 
 }
 
-async function solicitarCuenta() {
+async function solicitarCuenta(callback) {
 
     proveedor = new ethers.providers.Web3Provider(window.ethereum)
 
     proveedor.send("eth_requestAccounts", [])
     .then((cuentas) => {
 
+        console.log(cuentas)
         console.log("cuentas: "+cuentas)
         console.log("ethereum address: "+ethereum.selectedAddress)
 
-        if (cuentas > 0) {
+        if (cuentas.length > 0) {
 
             if (comprobarRedCorrecta()) {
 
                 // mostrarExito("Conectado correctamente")
 
-                obtenerTareas()
+                if (typeof callback !== "undefined") {
+
+                    console.log(callback)
+                    
+                    callback()
+
+                }
 
             }
 
@@ -157,9 +154,13 @@ function mostrarError(texto) {
 
     var mensaje = document.getElementById("Mensaje");
 
-    mensaje.className = "";
-    mensaje.classList.add("container","alert","alert-danger","text-center");
-    mensaje.innerHTML = texto;
+    if (mensaje != null) {
+        
+        mensaje.className = "";
+        mensaje.classList.add("container","alert","alert-danger","text-center");
+        mensaje.innerHTML = texto;
+
+    }
 
 }
 
@@ -167,9 +168,13 @@ function mostrarAdvertencia(texto) {
 
     var mensaje = document.getElementById("Mensaje");
 
-    mensaje.className = "";
-    mensaje.classList.add("container","alert","alert-warning","text-center");
-    mensaje.innerHTML = texto;
+    if (mensaje != null) {
+        
+        mensaje.className = "";
+        mensaje.classList.add("container","alert","alert-warning","text-center");
+        mensaje.innerHTML = texto;
+
+    }
 
 }
 
@@ -177,9 +182,13 @@ function mostrarExito(texto) {
 
     var mensaje = document.getElementById("Mensaje");
 
-    mensaje.className = "";
-    mensaje.classList.add("container","alert","alert-success","text-center");
-    mensaje.innerHTML = texto;
+    if (mensaje != null) {
+        
+        mensaje.className = "";
+        mensaje.classList.add("container","alert","alert-success","text-center");
+        mensaje.innerHTML = texto;
+
+    }
 
 }
 
@@ -187,9 +196,13 @@ function mostrarMensaje(texto) {
 
     var mensaje = document.getElementById("Mensaje");
 
-    mensaje.className = "";
-    mensaje.classList.add("container","alert","alert-primary","text-center");
-    mensaje.innerHTML = texto;
+    if (mensaje != null) {
+
+        mensaje.className = "";
+        mensaje.classList.add("container","alert","alert-primary","text-center");
+        mensaje.innerHTML = texto;
+
+    }
 
 }
 
@@ -197,17 +210,24 @@ function borrarMensaje() {
 
     var mensaje = document.getElementById("Mensaje");
 
-    mensaje.className = "";
-    mensaje.innerText = "";
+    if (mensaje != null) {
+        
+        mensaje.className = "";
+        mensaje.innerText = "";
+
+    }
 
 }
 
-function desConectarBlockchain() {
+function desConectarBlockchain(callback) {
 
     ethereum.selectedAddress = null;
 
-    tareas = [];
-    document.getElementById("tareas").innerHTML = ""
+    if (typeof callback !== "undefined") {
+        
+        callback()
+
+    }
 
     botonDesConectar.classList.add("d-none");
     botonConectar.classList.remove("d-none");
@@ -215,69 +235,6 @@ function desConectarBlockchain() {
     proveedor = null;
 
     borrarMensaje()
-
-}
-
-async function obtenerTareas() {
-
-    const tareasPorFila = 4;
-
-    contratoAgenda = new ethers.Contract("0x922501bC43C4290ee614B4394928000B22Fb0b24",abi,proveedor.getSigner());
-
-    var tareas = await contratoAgenda.obtenerTareas();
-
-    var numFilas = Math.ceil(tareas.length / tareasPorFila);
-
-    for (let indexFila = 0; indexFila < numFilas; indexFila++) {
-        
-        let fila = document.createElement("div")
-        fila.classList.add("row")
-
-        for (let indexTarea = (indexFila * tareasPorFila); indexTarea < tareas.length; indexTarea++) {
-            
-            let columnaTarea = document.createElement("div")
-            columnaTarea.classList.add("col-3")
-            fila.appendChild(columnaTarea)
-
-            let tarjeta = document.createElement("div")
-            tarjeta.classList.add("card")
-            tarjeta.style.width = "18 rem"
-            columnaTarea.appendChild(tarjeta)
-
-            let imagen = document.createElement("img")
-            imagen.src = "./img/cuaderno.png"
-            imagen.classList.add("card-img-top")
-            tarjeta.appendChild(imagen)
-
-            let contenidoTarjeta = document.createElement("div")
-            contenidoTarjeta.classList.add("card-body")
-            tarjeta.appendChild(contenidoTarjeta)
-
-            let titulo = document.createElement("h5")
-            titulo.classList.add("card-title")
-            titulo.appendChild(document.createTextNode(tareas[indexTarea].nombre))
-            contenidoTarjeta.appendChild(titulo)
-
-            let descripcion = document.createElement("p")
-            descripcion.classList.add("card-text")
-            descripcion.appendChild(document.createTextNode(tareas[indexTarea].descripcion))
-            contenidoTarjeta.appendChild(descripcion)
-
-            let botonEditar = document.createElement("a")
-            botonEditar.classList.add("btn","btn-primary")
-            botonEditar.href = "editarTarea.html"
-            botonEditar.appendChild(document.createTextNode("Editar"))
-            contenidoTarjeta.appendChild(botonEditar)
-
-
-        }
-
-        document.getElementById("tareas").appendChild(fila)
-        
-    }
-
-
-
 
 }
 
