@@ -23,9 +23,14 @@ async function obtenerTareas() {
     for (let indexFila = 0; indexFila < numFilas; indexFila++) {
         
         let fila = document.createElement("div")
-        fila.classList.add("row")
+        fila.classList.add("row","my-3")
 
-        for (let indexTarea = (indexFila * tareasPorFila); indexTarea < tareas.length; indexTarea++) {
+        let maxPosicionTareas = indexFila < numFilas-1 ? ((indexFila+1) * tareasPorFila) : tareas.length;
+        console.log("maxTareasFilas: "+maxPosicionTareas)
+
+        for (let indexTarea = (indexFila * tareasPorFila); indexTarea < maxPosicionTareas; indexTarea++) {
+
+            console.log(indexTarea)
             
             let columnaTarea = document.createElement("div")
             columnaTarea.classList.add("col-3")

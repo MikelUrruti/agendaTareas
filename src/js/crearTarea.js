@@ -8,8 +8,8 @@ document.getElementById("formCrearTarea").addEventListener("submit",function (ev
 
     event.preventDefault()
 
-    var nombre = document.getElementById("nombreTarea")
-    var descripcion = document.getElementById("descripcionTarea")
+    var nombre = document.getElementById("nombreTarea").value
+    var descripcion = document.getElementById("descripcionTarea").value
 
     crearTarea(nombre, descripcion)
 
@@ -20,12 +20,14 @@ async function crearTarea(nombre, descripcion) {
     console.log(proveedor.getSigner())
 
     var contratoAgenda = new ethers.Contract(direccionContrato, abi, proveedor.getSigner());
+    console.log(contratoAgenda)
 
     try {
 
+        console.log(nombre)
+
         var agregaTarea = await contratoAgenda.anadirTarea(nombre,descripcion,{
-            gasLimit: 1000000,
-            nonce: undefined
+            gasLimit: 1000000
         });
         
         console.log(agregaTarea)
