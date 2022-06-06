@@ -6,6 +6,8 @@ contract Agenda {
 
     mapping (address=>Tarea[]) private tareas;
 
+    error ErrorTarea(string texto);
+
     constructor () {
 
         address direccion = 0x3B7a7d5E22398689AF6A027a5916Ce199c7b1175;
@@ -29,7 +31,7 @@ contract Agenda {
 
                 if (keccak256(abi.encodePacked(tareas[msg.sender][index].nombre)) == keccak256(abi.encodePacked(nombre))) {
 
-                    revert("El nombre de la tarea esta repetido");
+                    revert ErrorTarea(string(bytes.concat(bytes("El nombre de la tarea '"),bytes(nombre),bytes("' esta repetido"))));
 
                 }
 
@@ -46,12 +48,17 @@ contract Agenda {
 
         if ((bytes(nombre).length) == 0 && (bytes(descripcion).length == 0)) {
 
-            revert("Indica todos los datos de la tarea");
+            revert ErrorTarea("Indica todos los datos de la tarea");
+
+        } else if (bytes(nombre).length == 0) {
+
+            revert ErrorTarea("Indica el nombre de la tarea");
+
+        } else if (bytes(descripcion).length == 0) {
+
+            revert ErrorTarea("Indica la descripcion de la tarea");
 
         }
-
-        require(bytes(nombre).length > 0,"Indica el nombre de la tarea");
-        require(bytes(descripcion).length > 0,"Indica la descripcion de la tarea");
 
         _;
 

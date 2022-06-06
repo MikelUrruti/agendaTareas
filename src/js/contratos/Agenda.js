@@ -1,9 +1,20 @@
-export const direccionContrato = "0x8328c13a5E5e69De0E261fbEEE0ccd3CCC48B2Ff"
+export const direccionContrato = "0xD080539B638122ec659A96043b6ebd703E7Ff97a"
 export const abi = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "texto",
+        "type": "string"
+      }
+    ],
+    "name": "ErrorTarea",
+    "type": "error"
   },
   {
     "inputs": [],

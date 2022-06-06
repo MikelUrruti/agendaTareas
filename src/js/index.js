@@ -26,20 +26,23 @@ async function obtenerTareas() {
         fila.classList.add("row","my-3")
 
         let maxPosicionTareas = indexFila < numFilas-1 ? ((indexFila+1) * tareasPorFila) : tareas.length;
-        console.log("maxTareasFilas: "+maxPosicionTareas)
 
         for (let indexTarea = (indexFila * tareasPorFila); indexTarea < maxPosicionTareas; indexTarea++) {
-
-            console.log(indexTarea)
             
             let columnaTarea = document.createElement("div")
             columnaTarea.classList.add("col-3")
             fila.appendChild(columnaTarea)
 
+            let enlaceTarjeta = document.createElement("a")
+            enlaceTarjeta.href = "editarTarea.html"
+            enlaceTarjeta.style.color = "inherit"
+            enlaceTarjeta.style.textDecoration = "inherit"
+            columnaTarea.appendChild(enlaceTarjeta)
+
             let tarjeta = document.createElement("div")
             tarjeta.classList.add("card")
             tarjeta.style.width = "18 rem"
-            columnaTarea.appendChild(tarjeta)
+            enlaceTarjeta.appendChild(tarjeta)
 
             let imagen = document.createElement("img")
             imagen.src = "./img/cuaderno.png"
@@ -60,11 +63,10 @@ async function obtenerTareas() {
             descripcion.appendChild(document.createTextNode(tareas[indexTarea].descripcion))
             contenidoTarjeta.appendChild(descripcion)
 
-            let botonEditar = document.createElement("a")
-            botonEditar.classList.add("btn","btn-primary")
-            botonEditar.href = "editarTarea.html"
-            botonEditar.appendChild(document.createTextNode("Editar"))
-            contenidoTarjeta.appendChild(botonEditar)
+            // let botonEliminar = document.createElement("button")
+            // botonEliminar.classList.add("btn","btn-danger")
+            // botonEliminar.appendChild(document.createTextNode("Eliminar"))
+            // contenidoTarjeta.appendChild(botonEliminar)
 
 
         }

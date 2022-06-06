@@ -8,6 +8,8 @@ export var proveedor = null;
 
 function iniciarConexion(callback, callbackDesconexion) { 
 
+    console.log("iniciando conexion")
+
     metamaskInstalado(callback)
 
     botonDesConectar=document.getElementById("desConectarBlockchain")
@@ -30,11 +32,7 @@ function metamaskInstalado(callback) {
 
     if (typeof window.ethereum !== 'undefined') {
 
-        if (ethereum.isConnected()) {
-
-            solicitarCuenta(callback)
-
-        }
+        solicitarCuenta(callback)
     
     } else {
     
@@ -112,8 +110,6 @@ async function solicitarCuenta(callback) {
                 // mostrarExito("Conectado correctamente")
 
                 if (typeof callback !== "undefined") {
-
-                    console.log(callback)
                     
                     callback()
 
@@ -237,5 +233,3 @@ function desConectarBlockchain(callback) {
     borrarMensaje()
 
 }
-
-//Direccion contrato: 0x922501bC43C4290ee614B4394928000B22Fb0b24
