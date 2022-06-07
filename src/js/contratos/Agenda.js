@@ -1,4 +1,4 @@
-export const direccionContrato = "0xD080539B638122ec659A96043b6ebd703E7Ff97a"
+export const direccionContrato = "0x1c32B122541b9756B45429156B860bD2a50a8a13"
 export const abi = [
   {
     "inputs": [],
@@ -31,6 +31,11 @@ export const abi = [
             "internalType": "string",
             "name": "descripcion",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "realizada",
+            "type": "bool"
           }
         ],
         "internalType": "struct Agenda.Tarea[]",
@@ -63,6 +68,11 @@ export const abi = [
             "internalType": "string",
             "name": "descripcion",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "realizada",
+            "type": "bool"
           }
         ],
         "internalType": "struct Agenda.Tarea",
@@ -95,6 +105,11 @@ export const abi = [
             "internalType": "string",
             "name": "descripcion",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "realizada",
+            "type": "bool"
           }
         ],
         "internalType": "struct Agenda.Tarea",
@@ -127,9 +142,9 @@ export const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "tarea",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "nombre",
+        "type": "string"
       }
     ],
     "name": "eliminarTarea",
@@ -140,12 +155,29 @@ export const abi = [
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "nombre",
-        "type": "string"
+        "components": [
+          {
+            "internalType": "string",
+            "name": "nombre",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "descripcion",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "realizada",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct Agenda.Tarea[]",
+        "name": "tareas",
+        "type": "tuple[]"
       }
     ],
-    "name": "eliminarTarea",
+    "name": "eliminarTareas",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

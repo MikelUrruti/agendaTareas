@@ -1,5 +1,17 @@
-.fondoTitulo {
+.cardModificada {
 
-    background-color: #32cd32;
+    cursor: pointer;
+
+}
+
+.cardSeleccionada {
+
+    background-color: #03C03C;
+
+}
+
+.cardSeleccionada .card-title, .cardSeleccionada .card-text {
+
+    color: white;
 
 }

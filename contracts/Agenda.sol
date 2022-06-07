@@ -12,7 +12,7 @@ contract Agenda {
 
         address direccion = 0x3B7a7d5E22398689AF6A027a5916Ce199c7b1175;
         
-        tareas[direccion].push(Tarea("prueba","esto es una prueba"));
+        tareas[direccion].push(Tarea("prueba","esto es una prueba",false));
 
     }
 
@@ -20,6 +20,7 @@ contract Agenda {
 
         string nombre;
         string descripcion;
+        bool realizada;
 
     }
 
@@ -94,13 +95,7 @@ contract Agenda {
 
     function anadirTarea(string memory nombre, string memory descripcion) public camposRellenos(nombre, descripcion) tareaUnica(nombre){
 
-        tareas[msg.sender].push(Tarea(nombre,descripcion));
-
-    }
-
-    function eliminarTarea(uint tarea) public{
-
-        delete tareas[msg.sender][tarea];
+        tareas[msg.sender].push(Tarea(nombre,descripcion,false));
 
     }
 
@@ -125,6 +120,12 @@ contract Agenda {
 
             delete tareas[msg.sender][posicion];
 
+            for (uint i = posicion; i< tareas[msg.sender].length-1; i++){
+                tareas[msg.sender][i] = tareas[msg.sender][i+1];
+            }
+            delete tareas[msg.sender][tareas[msg.sender].length-1];
+            tareas[msg.sender].pop();
+
         } else {
             
             revert("No se ha encontrado la tarea indicada");
@@ -132,6 +133,12 @@ contract Agenda {
         }
 
         
+
+    }
+
+    function eliminarTareas(Tarea[] memory tareas) public {
+
+
 
     }
 
