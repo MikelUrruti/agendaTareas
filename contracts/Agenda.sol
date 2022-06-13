@@ -4,7 +4,7 @@ pragma solidity ^0.8.11;
 
 contract Agenda {
 
-    mapping (address=>Tarea[]) private tareas;
+    mapping (address=>Tarea[]) internal tareas;
 
     error ErrorTarea(string texto);
 
@@ -58,6 +58,18 @@ contract Agenda {
         } else if (bytes(descripcion).length == 0) {
 
             revert ErrorTarea("Indica la descripcion de la tarea");
+
+        }
+
+        _;
+
+    }
+
+    modifier hayTareas(string[] memory tareas) {
+
+        if (tareas.length == 0) {
+            
+            revert ErrorTarea("No se ha indicado ninguna tarea a eliminar");
 
         }
 
@@ -136,9 +148,39 @@ contract Agenda {
 
     }
 
-    function eliminarTareas(Tarea[] memory tareas) public {
+    function eliminarTareas(string[] memory _tareas) public hayTareas(_tareas) {
 
+        uint256 numTareasEncontradas = 0;
 
+        for (uint256 i = 0; i < _tareas.length; i++) {
+            
+            for (uint256 index = 0; index < tareas[msg.sender].length; index++) {
+                
+                if (keccak256(abi.encodePacked(tareas[msg.sender][index].nombre)) == keccak256(abi.encodePacked(_tareas[i]))) {
+                    
+                    numTareasEncontradas++;
+
+                } else {
+
+                    revert ErrorTarea("No se han encontrado todas las tareas a eliminar");
+
+                }
+
+            }
+
+        }
+
+        for (uint256 index = 0; index < _tareas.length; index++) {
+                
+            delete tareas[msg.sender][index];
+
+            for (uint i = index; i< tareas[msg.sender].length-1; i++){
+                tareas[msg.sender][i] = tareas[msg.sender][i+1];
+            }
+            delete tareas[msg.sender][tareas[msg.sender].length-1];
+            tareas[msg.sender].pop();
+
+        }
 
     }
 
