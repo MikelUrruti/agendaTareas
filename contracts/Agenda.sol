@@ -65,9 +65,9 @@ contract Agenda {
 
     }
 
-    modifier hayTareas(string[] memory tareas) {
+    modifier hayTareas(string[] memory _tareas) {
 
-        if (tareas.length == 0) {
+        if (_tareas.length == 0) {
             
             revert ErrorTarea("No se ha indicado ninguna tarea a eliminar");
 
@@ -160,27 +160,33 @@ contract Agenda {
                     
                     numTareasEncontradas++;
 
-                } else {
-
-                    revert ErrorTarea("No se han encontrado todas las tareas a eliminar");
-
                 }
 
             }
 
         }
 
-        for (uint256 index = 0; index < _tareas.length; index++) {
-                
-            delete tareas[msg.sender][index];
+        if (numTareasEncontradas != _tareas.length) {
+            
+            revert ErrorTarea("No se han encontrado todas las tareas a eliminar");
 
-            for (uint i = index; i< tareas[msg.sender].length-1; i++){
-                tareas[msg.sender][i] = tareas[msg.sender][i+1];
+        } else {
+
+            for (uint256 index = 0; index < _tareas.length; index++) {
+                    
+                delete tareas[msg.sender][index];
+
+                for (uint i = index; i< tareas[msg.sender].length-1; i++){
+                    tareas[msg.sender][i] = tareas[msg.sender][i+1];
+                }
+                delete tareas[msg.sender][tareas[msg.sender].length-1];
+                tareas[msg.sender].pop();
+
             }
-            delete tareas[msg.sender][tareas[msg.sender].length-1];
-            tareas[msg.sender].pop();
-
+            
         }
+
+
 
     }
 
